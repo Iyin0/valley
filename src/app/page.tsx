@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select"
 import logo from '@/assets/PlaceholderCompanyLogos.png'
 import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react";
 
 const formSchema = z.object({
   companyName: z.string().min(2).max(50),
@@ -43,6 +44,8 @@ const formSchema = z.object({
 
 
 export default function Home() {
+
+  const [photo, setPhoto] = useState<File | null>(null)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -86,15 +89,21 @@ export default function Home() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="w-full flex flex-col mb-12 md:flex-row md:justify-between">
                   <div className="flex w-full justify-between flex-wrap mb-[30px] md:order-1 md:mb-0 md:w-[auto] md:flex-row md:flex-nowrap md:space-x-[12px]">
-                    <Button className="w-full font-medium max-w-[165px] h-[38px] bg-white text-black rounded-2 text-[14px] border-[1px] border-[#17171F1A] shadow-md hover:bg-white md:w-[67px]">Cancel</Button>
+                    <Button type="button" className="w-full font-medium max-w-[165px] h-[38px] bg-white text-black rounded-2 text-[14px] border-[1px] border-[#17171F1A] shadow-md hover:bg-white md:w-[67px]" onClick={() => form.reset()}>Cancel</Button>
                     <Button type="submit" className="w-full font-medium max-w-[165px] h-[38px] rounded-2 bg-[#17171F] text-[14px] hover:bg-[#17171F] md:w-[110px]">Submit</Button>
                   </div>
                   <div className="flex justify-between items-center md:space-x-[30px]">
-                    <Image src={logo} alt="Company logo" width={108} height={108} />
+                    <Image src={photo ? URL.createObjectURL(photo) : logo} alt="Company logo" width={108} height={108} className="rounded-[50%] max-w-[108px] w-[108px] max-h-[108px] h-[108px]" />
                     <div>
                       <div className="flex items-center text-[12px] space-x-[12px] mb-[12px]">
-                        <Button className="w-[64px] h-[32px] font-medium rounded-[6px] bg-[#CA3A31] text-white text-[12px] px-[10px] py-[6px] hover:bg-[#CA3A31]">Remove</Button>
-                        <Button className="w-[85px] h-[32px] font-medium rounded-[6px] bg-white text-black text-[12px] px-[10px] py-[6px] border-[1px] border-[#17171F1A] shadow-md hover:bg-white">Change Photo</Button>
+                        <Button type="button" className="w-[64px] h-[32px] font-medium rounded-[6px] bg-[#CA3A31] text-white text-[12px] px-[10px] py-[6px] hover:bg-[#CA3A31]" onClick={(e) => { e.preventDefault; setPhoto(null) }}>Remove</Button>
+                        {/* <Button className="w-[85px] h-[32px] font-medium rounded-[6px] bg-white text-black text-[12px] px-[10px] py-[6px] border-[1px] border-[#17171F1A] shadow-md hover:bg-white">Change Photo</Button> */}
+                        <div className="relative flex justify-center items-center w-[85px] h-[32px] px-0 py-[10px] bg-transparent box-border  border-[1px] border-[#17171F1A] shadow-md hover:bg-white cursor-pointer">
+                          <Label className="p-0 text-center cursor-pointer font-medium rounded-[6px] bg-white text-black text-[12px] w-full h-[32px] flex justify-center items-center" htmlFor="photo">Choose Photo</Label>
+                          <Input type="file" accept="image/*" id="photo" className="absolute top-0 left-0 opacity-0 w-full h-full cursor-pointer"
+                            onChange={(e) => { if (e.target.files) setPhoto(e.target.files[0]) }}
+                          />
+                        </div>
                       </div>
                       <p className="text-[#17171F] text-opacity-40 font-medium text-[14px]">or drag and drop (SVG, PNG, JPG)</p>
                     </div>
@@ -227,7 +236,7 @@ export default function Home() {
                             defaultValue={field.value}
                           >
                             <SelectTrigger className="w-[100%] font-medium text-sm text-[#17171F]">
-                              <SelectValue placeholder="Seed" />
+                              <SelectValue placeholder=" " />
                             </SelectTrigger>
                             <SelectContent>
                               {stages.map((item, index) => (

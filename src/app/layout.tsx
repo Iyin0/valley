@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from 'next/font/local'
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import MainHeader from "@/components/header";
+import MainFooter from "@/components/footer";
 
 const fontSans = localFont({
   variable: "--font-sans",
@@ -54,7 +56,11 @@ export default function RootLayout({
       <body className={cn(
         "min-h-screen bg-background font-sans antialiased",
         fontSans.variable
-      )}>{children}</body>
+      )}>
+        <MainHeader />
+        {children}
+        <MainFooter />
+      </body>
     </html>
   );
 }
